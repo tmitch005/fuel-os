@@ -181,6 +181,12 @@ button{font-family:var(--font);cursor:pointer}
 }
 .food-check:hover{border-color:var(--grn);color:var(--grn)}
 .food-check.on{border-color:var(--grn);background:var(--grn);color:var(--bg);box-shadow:0 0 10px var(--glow)}
+.food-remove{
+  width:17px;height:17px;display:flex;align-items:center;justify-content:center;
+  background:#020604;border:1px solid var(--bd);color:var(--red);
+  font-family:var(--font);font-size:10px;line-height:1;flex-shrink:0;
+}
+.food-remove:hover{border-color:var(--red);background:rgba(255,79,109,.12);box-shadow:0 0 10px rgba(255,79,109,.25)}
 .fname{flex:1;font-size:12px;color:var(--tx)}
 .fsrv{width:48px;background:#020604;border:1px solid var(--bd);color:var(--tx);font-family:var(--font);font-size:12px;padding:2px 4px;text-align:center;outline:none}
 .fsrv:focus{border-color:var(--grn)}
@@ -1018,7 +1024,7 @@ function renderMealCard(meal, date) {
           <span>${Math.round(e.carbs*e.servings)}g C</span>
           <span>${Math.round(e.fat*e.servings)}g F</span>
         </div>
-        <button class="btn-xs" title="Remove" onclick="removeFoodFromMeal('${date}','${meal.id}','${e.id}')">✕</button>
+        <button class="food-remove" title="Remove" onclick="removeFoodFromMeal('${date}','${meal.id}','${e.id}')">✕</button>
       </div>
     `).join('');
 
