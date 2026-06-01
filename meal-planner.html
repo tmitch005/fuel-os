@@ -292,7 +292,7 @@ button{font-family:var(--font);cursor:pointer}
 <div id="ov-pick" class="ov">
   <div class="modal">
     <div class="mhd">
-      <span>ADD FOOD TO MEAL</span>
+      <span>Add food to meal</span>
       <button class="btn-xs" onclick="closeModal('ov-pick')">✕</button>
     </div>
     <div class="mbd">
@@ -309,7 +309,7 @@ button{font-family:var(--font);cursor:pointer}
 <div id="ov-food-form" class="ov">
   <div class="modal">
     <div class="mhd">
-      <span id="ffm-title">ADD FOOD</span>
+      <span id="ffm-title">Add food</span>
       <button class="btn-xs" onclick="closeModal('ov-food-form')">✕</button>
     </div>
     <div class="mbd">
@@ -359,9 +359,9 @@ button{font-family:var(--font);cursor:pointer}
         </div>
       </div>
       <div class="actions-bar2">
-        <button class="btn btn-o" onclick="openBarcodeScanner()">📷 SCAN BARCODE</button>
-        <button class="btn btn-g" onclick="submitFoodForm()">SAVE FOOD</button>
-        <button class="btn" onclick="closeModal('ov-food-form')">CANCEL</button>
+        <button class="btn btn-o" onclick="openBarcodeScanner()">Scan barcode</button>
+        <button class="btn btn-g" onclick="submitFoodForm()">Save</button>
+        <button class="btn" onclick="closeModal('ov-food-form')">Cancel</button>
       </div>
     </div>
   </div>
@@ -371,7 +371,7 @@ button{font-family:var(--font);cursor:pointer}
 <div id="ov-tpl" class="ov">
   <div class="modal">
     <div class="mhd">
-      <span>SAVE AS TEMPLATE</span>
+      <span>Save as template</span>
       <button class="btn-xs" onclick="closeModal('ov-tpl')">✕</button>
     </div>
     <div class="mbd">
@@ -380,8 +380,8 @@ button{font-family:var(--font);cursor:pointer}
         <input id="tpl-name" class="fi" placeholder="e.g. High Protein Breakfast">
       </div>
       <div class="actions-bar">
-        <button class="btn btn-g" onclick="submitSaveTemplate()">SAVE</button>
-        <button class="btn" onclick="closeModal('ov-tpl')">CANCEL</button>
+        <button class="btn btn-g" onclick="submitSaveTemplate()">Save</button>
+        <button class="btn" onclick="closeModal('ov-tpl')">Cancel</button>
       </div>
     </div>
   </div>
@@ -390,12 +390,12 @@ button{font-family:var(--font);cursor:pointer}
 <!-- MODAL: CONFIRM -->
 <div id="ov-confirm" class="ov">
   <div class="modal" style="max-width:380px">
-    <div class="mhd"><span id="conf-title">CONFIRM</span></div>
+    <div class="mhd"><span id="conf-title">Confirm</span></div>
     <div class="mbd">
       <p id="conf-msg" style="margin-bottom:14px;font-size:12px"></p>
       <div class="actions-bar">
-        <button class="btn btn-r" id="conf-ok">CONFIRM</button>
-        <button class="btn" onclick="closeModal('ov-confirm')">CANCEL</button>
+        <button class="btn btn-r" id="conf-ok">Confirm</button>
+        <button class="btn" onclick="closeModal('ov-confirm')">Cancel</button>
       </div>
     </div>
   </div>
@@ -405,7 +405,7 @@ button{font-family:var(--font);cursor:pointer}
 <div id="ov-barcode-scanner" class="ov">
   <div class="modal" style="max-width:480px">
     <div class="mhd">
-      <span>SCAN BARCODE</span>
+      <span>Scan barcode</span>
       <button class="btn-xs" onclick="closeBarcodeScanner()">✕</button>
     </div>
     <div class="mbd">
@@ -417,7 +417,7 @@ button{font-family:var(--font);cursor:pointer}
           <input id="barcode-manual" class="fi" placeholder="e.g. 012345678905" inputmode="numeric"
             onkeydown="if(event.key==='Enter')lookupManualBarcode()">
         </div>
-        <button class="btn btn-g" style="align-self:flex-end" onclick="lookupManualBarcode()">LOOK UP</button>
+        <button class="btn btn-g" style="align-self:flex-end" onclick="lookupManualBarcode()">Look up</button>
       </div>
     </div>
   </div>
@@ -427,7 +427,7 @@ button{font-family:var(--font);cursor:pointer}
 <div id="ov-load-tpl" class="ov">
   <div class="modal">
     <div class="mhd">
-      <span>LOAD TEMPLATE</span>
+      <span>Load template</span>
       <button class="btn-xs" onclick="closeModal('ov-load-tpl')">✕</button>
     </div>
     <div class="mbd" id="load-tpl-list"></div>
@@ -584,9 +584,9 @@ function todayStr() { return new Date().toISOString().slice(0,10); }
 
 function fmtDate(ds) {
   const d = new Date(ds + 'T12:00:00');
-  const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  return `${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()} ${d.getFullYear()}`;
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 }
 
 function isToday(ds) { return ds === todayStr(); }
@@ -1046,14 +1046,14 @@ function renderMealCard(meal, date) {
         <span>${mm.fat}g F</span>
       </div>
       <div class="macts">
-        <button class="btn btn-sm btn-g" onclick="openPickFood('${date}','${meal.id}')">+ FOOD</button>
+        <button class="btn btn-sm btn-g" onclick="openPickFood('${date}','${meal.id}')">Add food</button>
         <details class="more-actions">
-          <summary class="btn btn-sm">MORE</summary>
+          <summary class="btn btn-sm">More</summary>
           <div class="more-menu">
-            <button class="btn btn-sm" onclick="openLoadTpl('${meal.id}','${date}')">TPL</button>
-            <button class="btn btn-sm" onclick="openSaveTemplate('${meal.id}','${date}')">SAVE</button>
-            <button class="btn btn-sm" onclick="duplicateMeal('${date}','${meal.id}')">DUP</button>
-            <button class="btn btn-sm btn-r" onclick="deleteMeal('${date}','${meal.id}')">DEL</button>
+            <button class="btn btn-sm" onclick="openLoadTpl('${meal.id}','${date}')">Template</button>
+            <button class="btn btn-sm" onclick="openSaveTemplate('${meal.id}','${date}')">Save</button>
+            <button class="btn btn-sm" onclick="duplicateMeal('${date}','${meal.id}')">Duplicate</button>
+            <button class="btn btn-sm btn-r" onclick="deleteMeal('${date}','${meal.id}')">Delete</button>
           </div>
         </details>
       </div>
@@ -1093,8 +1093,8 @@ function renderFoods() {
       <td style="color:var(--org)">${f.carbs}g</td>
       <td style="color:var(--pur)">${f.fat}g</td>
       <td>
-        <button class="btn btn-sm" onclick="openEditFood('${f.id}')">EDIT</button>
-        <button class="btn btn-sm btn-r" onclick="confirmDeleteFood('${f.id}')">DEL</button>
+        <button class="btn btn-sm" onclick="openEditFood('${f.id}')">Edit</button>
+        <button class="btn btn-sm btn-r" onclick="confirmDeleteFood('${f.id}')">Delete</button>
       </td>
     </tr>
   `).join('') || `<tr><td colspan="9" style="text-align:center;color:var(--tx2);padding:20px">No foods found</td></tr>`;
@@ -1103,8 +1103,8 @@ function renderFoods() {
   <div class="sbar" style="margin-bottom:12px">
     <input id="food-search-inp" class="sinp" placeholder="search foods by name or category…"
       value="${esc(q)}" oninput="renderFoods()" autocomplete="off">
-    <button class="btn btn-o" onclick="openBarcodeScanner()">📷 SCAN</button>
-    <button class="btn btn-g" onclick="openAddFood()">+ ADD FOOD</button>
+    <button class="btn btn-o" onclick="openBarcodeScanner()">Scan</button>
+    <button class="btn btn-g" onclick="openAddFood()">Add food</button>
   </div>
   <div class="panel" style="overflow-x:auto">
     <table class="ftbl">
@@ -1138,15 +1138,15 @@ function renderTemplates() {
             <div class="tsub" style="margin-top:3px;max-width:420px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(foodList)}</div>
           </div>
           <div style="display:flex;gap:6px;flex-shrink:0">
-            <button class="btn btn-sm btn-g" onclick="loadTemplateIntoMeal('${t.id}')">LOAD</button>
-            <button class="btn btn-sm btn-r" onclick="confirmDeleteTemplate('${t.id}')">DEL</button>
+            <button class="btn btn-sm btn-g" onclick="loadTemplateIntoMeal('${t.id}')">Load</button>
+            <button class="btn btn-sm btn-r" onclick="confirmDeleteTemplate('${t.id}')">Delete</button>
           </div>
         </div>`;
       }).join('');
 
   document.getElementById('s-templates').innerHTML = `
   <div class="panel">
-    <div class="ph"><span class="pt">SAVED TEMPLATES</span><span>${S.templates.length} SAVED</span></div>
+    <div class="ph"><span class="pt">Saved templates</span><span>${S.templates.length}</span></div>
     <div class="pb">${cards}</div>
   </div>`;
 }
@@ -1158,10 +1158,10 @@ function renderSettings() {
   const t = S.targets;
   document.getElementById('s-settings').innerHTML = `
   <div class="panel">
-    <div class="ph"><span class="pt">DAILY TARGETS</span></div>
+    <div class="ph"><span class="pt">Daily targets</span></div>
     <div class="pb">
       <div class="sset">
-        <div class="stitle">MACRO GOALS</div>
+        <div class="stitle">Macro goals</div>
         <div class="frow">
           <div class="fg">
             <label>Calories (kcal)</label>
@@ -1180,26 +1180,23 @@ function renderSettings() {
             <input id="tgt-fat" class="fi" type="number" min="0" value="${t.fat}" onchange="updateTarget('fat',this.value)">
           </div>
         </div>
-        <button class="btn btn-g" onclick="toast('Targets saved ✓')">SAVE TARGETS</button>
+        <button class="btn btn-g" onclick="toast('Targets saved')">Save targets</button>
       </div>
 
       <div class="sset">
-        <div class="stitle">DATA</div>
+        <div class="stitle">Data</div>
         <div class="actions-bar">
-          <button class="btn" onclick="exportJSON()">EXPORT JSON BACKUP</button>
-          <button class="btn" onclick="importJSON()">IMPORT JSON BACKUP</button>
-          <button class="btn" onclick="exportCSV()">EXPORT CSV</button>
-          <button class="btn btn-r" onclick="confirmResetAll()">RESET ALL DATA</button>
+          <button class="btn" onclick="exportJSON()">Export backup</button>
+          <button class="btn" onclick="importJSON()">Import backup</button>
+          <button class="btn" onclick="exportCSV()">Export CSV</button>
+          <button class="btn btn-r" onclick="confirmResetAll()">Reset all data</button>
         </div>
       </div>
 
       <div class="sset">
-        <div class="stitle">ABOUT</div>
-        <div style="font-size:11px;color:var(--tx2);line-height:2">
-          FUEL OS v1.0 — Local-first nutrition command center.<br>
-          All data stored in your browser's localStorage.<br>
-          No accounts, no servers, no tracking.<br><br>
-          <span style="color:var(--grn)">KEYBOARD:</span> Tab to navigate inputs · Enter to confirm
+        <div class="stitle">About</div>
+        <div style="font-size:12px;color:var(--tx2);line-height:1.7">
+          Fuel OS — local meal planner. Data stays in your browser.
         </div>
       </div>
     </div>
@@ -1308,7 +1305,7 @@ function loadRecompDay(date) {
     toast('Recomp day loaded. Check meals off as you eat.');
   };
   if(hasFood) {
-    confirm2('Replace this day with the 5-meal recomp plan?', 'REPLACE', apply);
+    confirm2('Replace this day with the 5-meal recomp plan?', 'Replace', apply);
   } else {
     apply();
   }
@@ -1328,7 +1325,7 @@ function toggleMealEaten(date, mealId) {
 }
 
 function deleteMeal(date, mealId) {
-  confirm2('Delete this meal?', 'DELETE', () => {
+  confirm2('Delete this meal?', 'Delete', () => {
     const log = S.logs[date];
     if(!log) return;
     log.meals = log.meals.filter(m => m.id !== mealId);
@@ -1369,7 +1366,7 @@ function repeatYesterday(date) {
     toast('No logged meals yesterday', 'var(--red)');
     return;
   }
-  confirm2(`Copy all meals from ${fmtDate(yd)} to today?`, 'COPY', () => {
+  confirm2(`Copy all meals from ${fmtDate(yd)} to today?`, 'Copy', () => {
     const log = getOrCreateLog(date);
     log.meals = ydLog.meals.map(m => ({
       id: uid(),
@@ -1607,7 +1604,7 @@ function lookupManualBarcode() {
 function fillFoodFormFromScan(food) {
   _editFoodId = null;
   _barcodeScanBusy = false;
-  document.getElementById('ffm-title').textContent = 'ADD FOOD (SCANNED)';
+  document.getElementById('ffm-title').textContent = 'Add food (scanned)';
   document.getElementById('ff-name').value = food.name;
   document.getElementById('ff-cat').value  = food.category;
   document.getElementById('ff-srv').value  = food.servingSize;
@@ -1637,7 +1634,7 @@ function closeBarcodeScanner() {
 
 function openAddFood() {
   _editFoodId = null;
-  document.getElementById('ffm-title').textContent = 'ADD FOOD';
+  document.getElementById('ffm-title').textContent = 'Add food';
   document.getElementById('ff-name').value = '';
   document.getElementById('ff-cat').value  = 'protein';
   document.getElementById('ff-srv').value  = '';
@@ -1654,7 +1651,7 @@ function openEditFood(foodId) {
   const f = S.foods.find(f => f.id === foodId);
   if(!f) return;
   _editFoodId = foodId;
-  document.getElementById('ffm-title').textContent = 'EDIT FOOD';
+  document.getElementById('ffm-title').textContent = 'Edit food';
   document.getElementById('ff-name').value = f.name;
   document.getElementById('ff-cat').value  = f.category;
   document.getElementById('ff-srv').value  = f.servingSize;
@@ -1695,7 +1692,7 @@ function submitFoodForm() {
 function confirmDeleteFood(foodId) {
   const f = S.foods.find(f => f.id === foodId);
   if(!f) return;
-  confirm2(`Delete "${f.name}" from database?`, 'DELETE', () => {
+  confirm2(`Delete "${f.name}" from database?`, 'Delete', () => {
     S.foods = S.foods.filter(f => f.id !== foodId);
     save();
     renderFoods();
@@ -1789,7 +1786,7 @@ function loadTemplateIntoMeal(tplId) {
 function confirmDeleteTemplate(tplId) {
   const t = S.templates.find(t => t.id === tplId);
   if(!t) return;
-  confirm2(`Delete template "${t.name}"?`, 'DELETE', () => {
+  confirm2(`Delete template "${t.name}"?`, 'Delete', () => {
     S.templates = S.templates.filter(t => t.id !== tplId);
     save();
     renderTemplates();
@@ -1806,7 +1803,7 @@ function updateTarget(key, val) {
 }
 
 function confirmResetAll() {
-  confirm2('This will delete ALL logs, templates, and foods. Are you sure?', 'RESET', () => {
+  confirm2('This will delete ALL logs, templates, and foods. Are you sure?', 'Reset', () => {
     localStorage.removeItem('fuelos_v2');
     location.reload();
   });
@@ -1892,10 +1889,10 @@ function closeModal(id) {
 }
 
 function confirm2(msg, label, cb) {
-  document.getElementById('conf-title').textContent = 'CONFIRM';
+  document.getElementById('conf-title').textContent = 'Confirm';
   document.getElementById('conf-msg').textContent = msg;
   const btn = document.getElementById('conf-ok');
-  btn.textContent = label || 'CONFIRM';
+  btn.textContent = label || 'Confirm';
   btn.onclick = () => { closeModal('ov-confirm'); cb(); };
   openModal('ov-confirm');
 }
