@@ -3,323 +3,264 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FUEL OS — Nutrition Command Center</title>
+<title>Fuel OS — Meal Planner</title>
 <style>
 :root {
-  --bg:   #020604;
-  --bg2:  #06110a;
-  --bg3:  #0a1b10;
-  --bg4:  #0f2a18;
-  --bd:   #174326;
-  --bd2:  #2f7d47;
-  --tx:   #b7f7c8;
-  --tx2:  #5f9f72;
-  --tx3:  #efffed;
-  --grn:  #39ff72;
-  --blu:  #4fdcff;
-  --org:  #f5d76e;
-  --pur:  #d38cff;
-  --red:  #ff4f6d;
-  --yel:  #c9ff5a;
-  --glow: rgba(57,255,114,.25);
-  --font: 'Courier New', Courier, monospace;
+  --bg:   #fafafa;
+  --bg2:  #fff;
+  --bg3:  #f4f4f4;
+  --bd:   #e5e5e5;
+  --tx:   #444;
+  --tx2:  #999;
+  --tx3:  #111;
+  --grn:  #2d7a4f;
+  --blu:  #2563eb;
+  --org:  #b45309;
+  --pur:  #7c3aed;
+  --red:  #dc2626;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.5}
-body{
-  background:
-    radial-gradient(circle at 18% 0%, rgba(57,255,114,.08), transparent 28rem),
-    linear-gradient(180deg, #020604 0%, #030a05 48%, #010302 100%);
-  text-shadow:0 0 5px rgba(57,255,114,.14);
-}
-body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:1000;
-  background:
-    linear-gradient(rgba(255,255,255,.025) 50%, rgba(0,0,0,.08) 50%),
-    linear-gradient(90deg, rgba(255,0,0,.015), rgba(0,255,0,.01), rgba(0,0,255,.015));
-  background-size:100% 4px, 6px 100%;
-  mix-blend-mode:screen;opacity:.38;
-}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--font);font-size:14px;line-height:1.5}
 a{color:inherit;text-decoration:none}
 button{font-family:var(--font);cursor:pointer}
 
-/* ── HEADER ── */
 #hdr{
   display:flex;align-items:center;justify-content:space-between;
-  padding:7px 16px;border-bottom:1px solid var(--bd);background:rgba(6,17,10,.96);
+  padding:12px 20px;background:var(--bg2);
   position:sticky;top:0;z-index:50;
-  box-shadow:0 0 18px rgba(57,255,114,.08);
 }
-.logo{color:var(--grn);font-size:14px;font-weight:bold;letter-spacing:3px;text-shadow:0 0 12px var(--glow)}
-.logo .cur{animation:blink 1s step-end infinite}
-@keyframes blink{50%{opacity:0}}
-#hdr-right{display:flex;gap:14px;align-items:center;font-size:11px;color:var(--tx2)}
+.logo{color:var(--tx3);font-size:15px;font-weight:600}
+.logo .cur{display:none}
+#hdr-right{display:flex;gap:16px;align-items:center;font-size:12px;color:var(--tx2)}
 #hdr-right .hv{color:var(--tx3)}
-#hdr-right .hvg{color:var(--grn)}
-#hdr-right .hvo{color:var(--org)}
+#hdr-right .hvg{color:var(--tx3);font-weight:500}
+#hdr-right .hvo{color:var(--tx3)}
 
-/* ── NAV ── */
 #nav{
-  display:flex;border-bottom:1px solid var(--bd);background:rgba(6,17,10,.94);
+  display:flex;gap:4px;padding:0 16px 12px;background:var(--bg2);
   overflow-x:auto;scrollbar-width:none;
 }
 #nav::-webkit-scrollbar{display:none}
 .nb{
-  background:none;border:none;border-bottom:2px solid transparent;
-  color:var(--tx2);font-family:var(--font);font-size:10px;letter-spacing:1.5px;
-  padding:8px 18px;cursor:pointer;text-transform:uppercase;white-space:nowrap;
-  transition:color .1s;
+  background:none;border:none;border-radius:6px;
+  color:var(--tx2);font-size:13px;padding:6px 12px;cursor:pointer;white-space:nowrap;
 }
-.nb:hover{color:var(--tx3);text-shadow:0 0 8px var(--glow)}
-.nb.on{color:var(--grn);border-bottom-color:var(--grn);text-shadow:0 0 10px var(--glow)}
+.nb:hover{color:var(--tx3);background:var(--bg3)}
+.nb.on{color:var(--tx3);background:var(--bg3);font-weight:500}
 
-/* ── MAIN ── */
-#main{max-width:860px;margin:0 auto;padding:14px 14px 60px}
+#main{max-width:720px;margin:0 auto;padding:8px 20px 48px}
 .screen{display:none}.screen.on{display:block}
 
-/* ── PANELS ── */
-.panel{background:rgba(6,17,10,.9);border:1px solid var(--bd);margin-bottom:10px;box-shadow:inset 0 0 0 1px rgba(57,255,114,.03), 0 0 22px rgba(0,0,0,.28)}
+.panel{background:var(--bg2);margin-bottom:20px}
 .ph{
   display:flex;align-items:center;justify-content:space-between;
-  padding:7px 12px;border-bottom:1px solid var(--bd);
-  font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx2);
+  padding:0 0 8px;font-size:12px;color:var(--tx2);
 }
-.ph .pt{color:var(--tx3);font-size:11px}
-.pb{padding:12px}
+.ph .pt{color:var(--tx3);font-size:13px;font-weight:500}
+.pb{padding:0}
 
-/* ── STATS GRID ── */
-.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:10px}
-.scard{background:linear-gradient(180deg, rgba(10,27,16,.94), rgba(4,13,7,.94));border:1px solid var(--bd);padding:9px 12px}
-.sl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--tx2)}
-.sv{font-size:22px;color:var(--tx3);line-height:1.1;margin-top:2px}
-.ss{font-size:10px;color:var(--tx2);margin-top:1px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:16px}
+.scard{background:var(--bg3);padding:12px;border-radius:6px}
+.sl{font-size:11px;color:var(--tx2)}
+.sv{font-size:22px;color:var(--tx3);line-height:1.2;margin-top:2px;font-weight:500}
+.ss{font-size:12px;color:var(--tx2);margin-top:2px}
 
-/* ── MACRO BARS ── */
-.mrow{display:flex;align-items:center;gap:8px;margin-bottom:7px}
-.mlbl{width:72px;font-size:10px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px}
-.mbg{flex:1;height:10px;background:#010302;border:1px solid var(--bd);overflow:hidden;position:relative}
-.mfill{height:100%;background:var(--grn);transition:width .4s ease;max-width:100%;box-shadow:0 0 10px currentColor}
-.mfill.plan{opacity:.28}
+.mrow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.mlbl{width:64px;font-size:12px;color:var(--tx2)}
+.mbg{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;position:relative}
+.mfill{height:100%;transition:width .3s ease;max-width:100%;border-radius:3px}
+.mfill.plan{opacity:.35}
 .mfill.actual{position:absolute;left:0;top:0;height:100%}
 .mfill.cal{background:var(--grn)}
 .mfill.pro{background:var(--blu)}
 .mfill.car{background:var(--org)}
 .mfill.fat{background:var(--pur)}
 .mfill.over{background:var(--red)}
-.mval{width:150px;font-size:10px;text-align:right;color:var(--tx)}
-.budget-legend{display:flex;justify-content:flex-end;gap:12px;margin-bottom:8px;font-size:9px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px}
-.budget-legend .actual-dot,.budget-legend .plan-dot{display:inline-block;width:16px;height:6px;margin-right:4px;border:1px solid var(--bd2);vertical-align:middle}
-.budget-legend .actual-dot{background:var(--grn);box-shadow:0 0 8px var(--glow)}
-.budget-legend .plan-dot{background:var(--grn);opacity:.28}
+.mval{width:140px;font-size:11px;text-align:right;color:var(--tx2)}
+.budget-legend{display:flex;justify-content:flex-end;gap:14px;margin-bottom:10px;font-size:11px;color:var(--tx2)}
+.budget-legend .actual-dot,.budget-legend .plan-dot{display:inline-block;width:14px;height:4px;margin-right:4px;border-radius:2px;vertical-align:middle}
+.budget-legend .actual-dot{background:var(--grn)}
+.budget-legend .plan-dot{background:var(--grn);opacity:.35}
 
-/* ── XP BAR ── */
-.xprow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.xplbl{font-size:10px;color:var(--tx2);width:72px;text-transform:uppercase;letter-spacing:.5px}
-.xpbg{flex:1;height:5px;background:#010302;border:1px solid var(--bd)}
-.xpfill{height:100%;background:var(--org);transition:width .5s ease;box-shadow:0 0 10px var(--org)}
-.xpval{font-size:10px;color:var(--org);width:110px;text-align:right}
+.dnav{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+.ddisp{flex:1;text-align:center;font-size:15px;color:var(--tx3);font-weight:500}
+.dsub{font-size:12px;color:var(--tx2);font-weight:400;margin-left:6px}
 
-/* ── QUESTS ── */
-.qlist{display:flex;flex-direction:column;gap:5px}
-.qi{display:flex;align-items:center;gap:9px;padding:6px 8px;background:var(--bg3);border:1px solid var(--bd)}
-.qchk{width:13px;height:13px;border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
-.qchk.done{border-color:var(--grn);color:var(--grn)}
-.qtx{flex:1;font-size:12px}
-.qtx.done{color:var(--tx2);text-decoration:line-through}
-.qxp{font-size:10px;color:var(--org)}
-
-/* ── DATE NAV ── */
-.dnav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.ddisp{flex:1;text-align:center;font-size:13px;color:var(--tx3);letter-spacing:1px}
-.dsub{font-size:10px;color:var(--tx2);margin-left:6px}
-
-/* ── MEAL CARDS ── */
-.mc{background:rgba(6,17,10,.9);border:1px solid var(--bd);margin-bottom:10px;box-shadow:0 0 18px rgba(0,0,0,.25)}
-.mc.pending{opacity:.72}
-.mc.eaten{border-color:var(--grn)}
-.mc.partial{opacity:.9;border-color:var(--bd2)}
+.mc{margin-bottom:24px}
+.mc.pending{opacity:.55}
+.mc.eaten .meal-check.on{background:var(--grn);border-color:var(--grn)}
+.mc.partial{opacity:.85}
 .mch{
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;
-  padding:7px 12px;background:linear-gradient(90deg, rgba(10,27,16,.96), rgba(4,13,7,.96));border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  padding:0 0 8px;
 }
-.mhead-left{display:flex;align-items:center;gap:8px;min-width:160px}
+.mhead-left{display:flex;align-items:center;gap:8px;min-width:140px}
 .meal-check{
   width:18px;height:18px;display:flex;align-items:center;justify-content:center;
-  background:var(--bg2);border:1px solid var(--bd2);color:var(--tx2);
-  font-family:var(--font);font-size:11px;line-height:1;flex-shrink:0;
+  background:var(--bg2);border:1px solid var(--bd);border-radius:4px;color:var(--tx2);
+  font-size:11px;line-height:1;flex-shrink:0;
 }
-.meal-check:hover{border-color:var(--grn);color:var(--grn)}
-.meal-check.on{border-color:var(--grn);background:var(--grn);color:var(--bg);box-shadow:0 0 12px var(--glow)}
+.meal-check:hover{border-color:var(--tx2)}
+.meal-check.on{background:var(--grn);border-color:var(--grn);color:#fff}
 .mname{
-  background:transparent;border:none;border-bottom:1px solid transparent;
-  color:var(--tx3);font-family:var(--font);font-size:13px;font-weight:bold;
-  width:120px;outline:none;padding:1px 0;
+  background:transparent;border:none;
+  color:var(--tx3);font-size:15px;font-weight:500;
+  width:140px;outline:none;padding:0;
 }
 .mc.pending .mname{color:var(--tx2)}
-.mname:focus{border-bottom-color:var(--grn)}
-.msum{display:flex;gap:10px;font-size:10px;color:var(--tx2)}
-.msum span{color:var(--tx)}
-.macts{display:flex;gap:4px}
+.mname:focus{outline:1px dotted var(--tx2);outline-offset:2px}
+.msum{display:flex;gap:12px;font-size:12px;color:var(--tx2)}
+.msum span{color:var(--tx3)}
+.macts{display:flex;gap:6px}
 .more-actions{position:relative}
 .more-actions summary{list-style:none}
 .more-actions summary::-webkit-details-marker{display:none}
-.more-actions[open] summary{border-color:var(--grn);color:var(--grn)}
 .more-menu{
-  display:flex;gap:4px;position:absolute;right:0;top:24px;z-index:20;
-  background:var(--bg2);border:1px solid var(--bd);padding:5px;
-  box-shadow:0 0 18px rgba(0,0,0,.5);white-space:nowrap;
+  display:flex;gap:4px;position:absolute;right:0;top:28px;z-index:20;
+  background:var(--bg2);padding:6px;border-radius:6px;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);white-space:nowrap;
 }
-.mfl{padding:6px 12px;min-height:36px}
-.fr{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--bd)}
-.fr:last-child{border-bottom:none}
-.fr.skipped{opacity:.72}
-.fr.skipped .fname{color:var(--tx)}
+.mfl{padding:0}
+.fr{display:flex;align-items:center;gap:8px;padding:6px 0}
+.fr.skipped{opacity:.45}
+.fr.skipped .fname{color:var(--tx2)}
 .food-check{
-  width:15px;height:15px;display:flex;align-items:center;justify-content:center;
-  background:var(--bg2);border:1px solid var(--bd2);color:var(--tx2);
-  font-family:var(--font);font-size:9px;line-height:1;flex-shrink:0;
+  width:16px;height:16px;display:flex;align-items:center;justify-content:center;
+  background:var(--bg2);border:1px solid var(--bd);border-radius:3px;color:transparent;
+  font-size:10px;line-height:1;flex-shrink:0;
 }
-.food-check:hover{border-color:var(--grn);color:var(--grn)}
-.food-check.on{border-color:var(--grn);background:var(--grn);color:var(--bg);box-shadow:0 0 10px var(--glow)}
+.food-check:hover{border-color:var(--tx2)}
+.food-check.on{border-color:var(--grn);background:var(--grn);color:#fff}
 .food-remove{
-  width:17px;height:17px;display:flex;align-items:center;justify-content:center;
-  background:#020604;border:1px solid var(--bd);color:var(--red);
-  font-family:var(--font);font-size:10px;line-height:1;flex-shrink:0;
+  width:20px;height:20px;display:flex;align-items:center;justify-content:center;
+  background:none;border:none;color:var(--tx2);font-size:14px;line-height:1;flex-shrink:0;
 }
-.food-remove:hover{border-color:var(--red);background:rgba(255,79,109,.12);box-shadow:0 0 10px rgba(255,79,109,.25)}
-.fname{flex:1;font-size:12px;color:var(--tx)}
-.fsrv{width:48px;background:#020604;border:1px solid var(--bd);color:var(--tx);font-family:var(--font);font-size:12px;padding:2px 4px;text-align:center;outline:none}
-.fsrv:focus{border-color:var(--grn)}
-.funit{font-size:10px;color:var(--tx2);width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fmac{font-size:10px;color:var(--tx2);display:flex;gap:7px;flex-shrink:0}
-.fmac .fc{color:var(--tx)}
+.food-remove:hover{color:var(--red)}
+.fname{flex:1;font-size:14px;color:var(--tx3)}
+.fqty{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.fsrv{
+  width:52px;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;
+  color:var(--tx3);font-size:13px;padding:3px 6px;text-align:center;outline:none;
+}
+.fsrv.amt{width:56px}
+.fsrv:focus{border-color:var(--tx2)}
+.fqty-u{font-size:11px;color:var(--tx2);max-width:40px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+.funit{font-size:11px;color:var(--tx2);width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fmac{font-size:11px;color:var(--tx2);display:flex;gap:8px;flex-shrink:0}
+.fmac .fc{color:var(--tx3)}
 .fmac .fp{color:var(--blu)}
-.empty-meal{font-size:11px;color:var(--tx2);text-align:center;padding:10px 0}
+.empty-meal{font-size:13px;color:var(--tx2);padding:8px 0}
 
-/* ── BUTTONS ── */
 .btn{
-  background:transparent;border:1px solid var(--bd2);color:var(--tx);
-  font-family:var(--font);font-size:11px;padding:4px 9px;cursor:pointer;
-  letter-spacing:.5px;transition:all .1s;white-space:nowrap;
+  background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--tx3);
+  font-size:12px;padding:5px 10px;cursor:pointer;white-space:nowrap;
 }
-.btn:hover{border-color:var(--grn);color:var(--grn);box-shadow:0 0 10px var(--glow);text-shadow:0 0 8px var(--glow)}
-.btn-sm{padding:2px 6px;font-size:10px}
-.btn-xs{padding:1px 5px;font-size:10px;border:none;color:var(--tx2)}
-.btn-xs:hover{color:var(--tx);border:none}
-.btn-g{border-color:var(--grn);color:var(--grn)}
-.btn-g:hover{background:var(--grn);color:var(--bg);text-shadow:none}
-.btn-r{border-color:var(--red);color:var(--red)}
-.btn-r:hover{background:var(--red);color:var(--bg)}
-.btn-o{border-color:var(--org);color:var(--org)}
-.btn-o:hover{background:var(--org);color:var(--bg)}
+.btn:hover{background:var(--bg3)}
+.btn-sm{padding:3px 8px;font-size:12px}
+.btn-xs{padding:2px 6px;font-size:14px;border:none;background:none;color:var(--tx2)}
+.btn-xs:hover{color:var(--tx3);background:none}
+.btn-g{background:var(--tx3);border-color:var(--tx3);color:#fff}
+.btn-g:hover{background:#333;border-color:#333}
+.btn-r{color:var(--red);border-color:transparent;background:none}
+.btn-r:hover{background:#fef2f2}
+.btn-o{background:none}
 
-/* ── MODAL ── */
 .ov{
-  display:none;position:fixed;inset:0;background:rgba(0,6,2,.82);
-  z-index:200;align-items:flex-start;justify-content:center;padding:50px 12px 20px;
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.25);
+  z-index:200;align-items:flex-start;justify-content:center;padding:48px 16px 20px;
 }
 .ov.on{display:flex}
 .modal{
-  background:var(--bg2);border:1px solid var(--bd2);width:100%;max-width:520px;
-  max-height:85vh;overflow-y:auto;
+  background:var(--bg2);border-radius:8px;width:100%;max-width:480px;
+  max-height:85vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.12);
 }
 .mhd{
   display:flex;align-items:center;justify-content:space-between;
-  padding:9px 14px;border-bottom:1px solid var(--bd);
-  font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);
+  padding:14px 16px;font-size:14px;font-weight:500;color:var(--tx3);
   position:sticky;top:0;background:var(--bg2);z-index:1;
 }
-.mbd{padding:14px}
+.mbd{padding:0 16px 16px}
 
-/* ── SEARCH ── */
-.sbar{display:flex;gap:7px;margin-bottom:10px}
+.sbar{display:flex;gap:8px;margin-bottom:12px}
 .sinp{
-  flex:1;background:#020604;border:1px solid var(--bd);color:var(--tx);
-  font-family:var(--font);font-size:12px;padding:7px 10px;outline:none;
+  flex:1;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--tx3);
+  font-size:14px;padding:8px 10px;outline:none;
 }
-.sinp:focus{border-color:var(--grn)}
+.sinp:focus{border-color:var(--tx2)}
 .sinp::placeholder{color:var(--tx2)}
 
-/* ── FORMS ── */
-.frow{display:flex;gap:8px;margin-bottom:9px;align-items:flex-end;flex-wrap:wrap}
-.fg{display:flex;flex-direction:column;gap:3px;flex:1;min-width:80px}
-.fg label{font-size:9px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px}
+.frow{display:flex;gap:10px;margin-bottom:12px;align-items:flex-end;flex-wrap:wrap}
+.fg{display:flex;flex-direction:column;gap:4px;flex:1;min-width:80px}
+.fg label{font-size:11px;color:var(--tx2)}
 .fi,.fsel{
-  background:#020604;border:1px solid var(--bd);color:var(--tx);
-  font-family:var(--font);font-size:12px;padding:6px 8px;outline:none;width:100%;
+  background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--tx3);
+  font-size:14px;padding:7px 10px;outline:none;width:100%;
 }
-.fi:focus,.fsel:focus{border-color:var(--grn)}
-.fsel option{background:var(--bg2)}
+.fi:focus,.fsel:focus{border-color:var(--tx2)}
 
-/* ── FOOD TABLE ── */
 .ftbl{width:100%;border-collapse:collapse}
 .ftbl th{
-  text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.5px;
-  color:var(--tx2);padding:6px 8px;border-bottom:1px solid var(--bd);
+  text-align:left;font-size:11px;font-weight:500;
+  color:var(--tx2);padding:8px 6px;
 }
-.ftbl td{padding:7px 8px;border-bottom:1px solid var(--bd);font-size:12px;vertical-align:middle}
-.ftbl tr:hover td{background:var(--bg3)}
-.ftbl .na{color:var(--tx3)}
+.ftbl td{padding:10px 6px;font-size:13px;vertical-align:middle}
+.ftbl tbody tr:hover td{background:var(--bg3)}
+.ftbl .na{color:var(--tx3);font-weight:500}
 
-/* ── TAGS ── */
-.tag{display:inline-block;padding:1px 5px;font-size:9px;border:1px solid var(--bd);color:var(--tx2);text-transform:uppercase;letter-spacing:.5px}
-.tg-protein{border-color:var(--blu);color:var(--blu)}
-.tg-carb{border-color:var(--org);color:var(--org)}
-.tg-fat{border-color:var(--pur);color:var(--pur)}
-.tg-fruit{border-color:var(--grn);color:var(--grn)}
-.tg-dairy{border-color:var(--yel);color:var(--yel)}
+.tag{display:inline-block;padding:1px 6px;font-size:10px;border-radius:4px;background:var(--bg3);color:var(--tx2);margin-left:6px}
+.tg-protein{background:#eff6ff;color:var(--blu)}
+.tg-carb{background:#fffbeb;color:var(--org)}
+.tg-fat{background:#f5f3ff;color:var(--pur)}
+.tg-fruit{background:#f0fdf4;color:var(--grn)}
+.tg-dairy{background:#fefce8;color:#a16207}
 
-/* ── STAR ── */
-.star{cursor:pointer;color:var(--tx2);font-size:13px;line-height:1}
+.star{cursor:pointer;color:var(--tx2);font-size:15px;line-height:1}
 .star.on{color:var(--org)}
 
-/* ── TOAST ── */
 #toast{
-  position:fixed;bottom:20px;right:20px;background:var(--bg2);
-  border:1px solid var(--grn);color:var(--grn);font-family:var(--font);
-  font-size:12px;padding:7px 14px;z-index:999;opacity:0;
+  position:fixed;bottom:20px;right:20px;background:var(--tx3);color:#fff;
+  font-size:13px;padding:8px 14px;border-radius:6px;z-index:999;opacity:0;
   transform:translateY(6px);transition:all .2s;pointer-events:none;
 }
 #toast.on{opacity:1;transform:translateY(0)}
 
-/* ── TEMPLATE CARDS ── */
 .tcard{
-  background:var(--bg3);border:1px solid var(--bd);padding:9px 12px;margin-bottom:7px;
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:12px 0;margin-bottom:4px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
 }
-.tname{font-size:13px;color:var(--tx3)}
-.tsub{font-size:10px;color:var(--tx2);margin-top:2px}
+.tname{font-size:14px;color:var(--tx3);font-weight:500}
+.tsub{font-size:12px;color:var(--tx2);margin-top:2px}
 
-/* ── FAV CHIPS ── */
-.favrow{display:flex;flex-wrap:wrap;gap:5px;padding-bottom:6px}
+.favrow{display:flex;flex-wrap:wrap;gap:6px;padding-bottom:8px}
 .fchip{
-  background:var(--bg3);border:1px solid var(--bd);padding:4px 8px;
-  font-size:11px;color:var(--tx);cursor:pointer;transition:all .1s;font-family:var(--font);
+  background:var(--bg3);padding:5px 10px;border-radius:16px;
+  font-size:13px;color:var(--tx3);cursor:pointer;border:none;
 }
-.fchip:hover{border-color:var(--grn);color:var(--grn)}
+.fchip:hover{background:var(--bd)}
 
-/* ── SETTINGS ── */
-.stitle{
-  font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--grn);
-  margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--bd);
-}
-.sset{margin-bottom:18px}
+.stitle{font-size:13px;font-weight:500;color:var(--tx3);margin-bottom:10px}
+.sset{margin-bottom:24px}
 
-/* ── MISC ── */
-.hr{border:none;border-top:1px solid var(--bd);margin:10px 0}
-.es{text-align:center;padding:20px;color:var(--tx2);font-size:12px}
-.actions-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-.actions-bar2{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--bd2)}
+.es{text-align:center;padding:24px;color:var(--tx2);font-size:13px}
+.actions-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.actions-bar2{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 @media(max-width:580px){
-  .sgrid{grid-template-columns:1fr 1fr}
   .fmac{display:none}
   .msum{flex-wrap:wrap}
   #hdr-right .hv-hide{display:none}
 }
+
+#barcode-reader{border-radius:6px;background:var(--bg3);min-height:220px;overflow:hidden}
+#barcode-reader video{width:100%!important;height:auto!important;display:block}
+#barcode-reader__scan_region{background:var(--bg3)!important}
+#barcode-reader__dashboard_section{display:none}
+.scan-hint{font-size:12px;color:var(--tx2);text-align:center;margin-top:8px;line-height:1.4}
+.scan-hint.loading{color:var(--org)}
+.scan-hint.err{color:var(--red)}
+.scan-hint.ok{color:var(--grn)}
 </style>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
 
@@ -327,16 +268,16 @@ button{font-family:var(--font);cursor:pointer}
 
 <!-- HEADER -->
 <div id="hdr">
-  <div class="logo">FUEL<span class="cur">_</span>OS</div>
+  <div class="logo">Fuel OS</div>
   <div id="hdr-right"></div>
 </div>
 
 <!-- NAV -->
 <div id="nav">
-  <button class="nb on" data-s="today">TODAY</button>
-  <button class="nb" data-s="foods">FOODS</button>
-  <button class="nb" data-s="templates">TEMPLATES</button>
-  <button class="nb" data-s="settings">SETTINGS</button>
+  <button class="nb on" data-s="today">Today</button>
+  <button class="nb" data-s="foods">Foods</button>
+  <button class="nb" data-s="templates">Templates</button>
+  <button class="nb" data-s="settings">Settings</button>
 </div>
 
 <!-- MAIN -->
@@ -418,6 +359,7 @@ button{font-family:var(--font);cursor:pointer}
         </div>
       </div>
       <div class="actions-bar2">
+        <button class="btn btn-o" onclick="openBarcodeScanner()">📷 SCAN BARCODE</button>
         <button class="btn btn-g" onclick="submitFoodForm()">SAVE FOOD</button>
         <button class="btn" onclick="closeModal('ov-food-form')">CANCEL</button>
       </div>
@@ -454,6 +396,28 @@ button{font-family:var(--font);cursor:pointer}
       <div class="actions-bar">
         <button class="btn btn-r" id="conf-ok">CONFIRM</button>
         <button class="btn" onclick="closeModal('ov-confirm')">CANCEL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: BARCODE SCANNER -->
+<div id="ov-barcode-scanner" class="ov">
+  <div class="modal" style="max-width:480px">
+    <div class="mhd">
+      <span>SCAN BARCODE</span>
+      <button class="btn-xs" onclick="closeBarcodeScanner()">✕</button>
+    </div>
+    <div class="mbd">
+      <div id="barcode-reader"></div>
+      <p id="scan-status" class="scan-hint">Point camera at the UPC barcode on the package.</p>
+      <div class="frow" style="margin-top:10px;margin-bottom:0">
+        <div class="fg" style="flex:2;min-width:140px">
+          <label>Or enter barcode</label>
+          <input id="barcode-manual" class="fi" placeholder="e.g. 012345678905" inputmode="numeric"
+            onkeydown="if(event.key==='Enter')lookupManualBarcode()">
+        </div>
+        <button class="btn btn-g" style="align-self:flex-end" onclick="lookupManualBarcode()">LOOK UP</button>
       </div>
     </div>
   </div>
@@ -869,6 +833,42 @@ function fmtConsumedAmount(entry) {
   return fmtAmount(entry.servingSize * entry.servings, entry.unit);
 }
 
+function normalizeUnit(unit) {
+  return String(unit || '').trim().toLowerCase();
+}
+
+function hasAmountUnit(unit) {
+  return normalizeUnit(unit).length > 0;
+}
+
+function unitLabel(unit) {
+  const u = normalizeUnit(unit);
+  if(u === 'g' || u === 'gram' || u === 'grams') return 'g';
+  if(u === 'ml' || u === 'milliliter' || u === 'milliliters') return 'ml';
+  if(u === 'tbsp' || u === 'tablespoon' || u === 'tablespoons') return 'tbsp';
+  if(u === 'tsp' || u === 'teaspoon' || u === 'teaspoons') return 'tsp';
+  if(u === 'oz' || u === 'ounce' || u === 'ounces') return 'oz';
+  return String(unit || '').trim();
+}
+
+function fmtInputAmount(entry) {
+  if(hasAmountUnit(entry.unit) && entry.servingSize > 0) {
+    return fmtNum(entry.servingSize * entry.servings);
+  }
+  return fmtNum(entry.servings);
+}
+
+function fmtInputHint(entry) {
+  if(hasAmountUnit(entry.unit) && entry.servingSize > 0) {
+    return `Enter ${unitLabel(entry.unit)}. Per serving: ${fmtAmount(entry.servingSize, entry.unit)}`;
+  }
+  return 'Servings';
+}
+
+function fmtAmountSideLabel(entry) {
+  return `×${fmtNum(entry.servings)} srv`;
+}
+
 function checkedFoodsCount(log) {
   return log.meals.reduce((total, meal) => total + meal.foods.filter(e => e.eaten !== false).length, 0);
 }
@@ -936,10 +936,9 @@ function renderHeader() {
   const streak = computeStreak();
   const lvl   = getLevel(xp);
   document.getElementById('hdr-right').innerHTML = `
-    <span class="hv-hide">LVL <span class="hvg">${lvl.level}</span></span>
-    <span class="hv-hide"><span class="hv">${lvl.name}</span></span>
-    <span>XP <span class="hvo">${xp}</span></span>
-    <span>STREAK <span class="hv">${streak}</span></span>
+    <span class="hv-hide">Lv ${lvl.level} · ${lvl.name}</span>
+    <span>${xp} xp</span>
+    <span>${streak} day streak</span>
   `;
 }
 
@@ -963,20 +962,19 @@ function renderToday() {
     <button class="btn btn-sm" onclick="shiftDate(-1)">◀</button>
     <div class="ddisp">
       ${fmtDate(date)}
-      ${isT ? '<span class="dsub">[TODAY]</span>' : ''}
+      ${isT ? '<span class="dsub">today</span>' : ''}
     </div>
     <button class="btn btn-sm" onclick="shiftDate(1)" ${isT?'disabled style="opacity:.3"':''}>▶</button>
-    ${!isT ? `<button class="btn btn-sm btn-g" onclick="goToday()">TODAY</button>` : ''}
+    ${!isT ? `<button class="btn btn-sm" onclick="goToday()">Today</button>` : ''}
   </div>
 
   <!-- MACRO BARS -->
   <div class="panel">
-    <div class="ph"><span class="pt">TODAY BUDGET</span><span>${eatenItems}/${totalItems} ITEMS CHECKED</span></div>
+    <div class="ph"><span class="pt">Daily totals</span><span>${eatenItems}/${totalItems} checked</span></div>
     <div class="pb">
       <div class="budget-legend">
-        <span><span class="actual-dot"></span>Actual</span>
-        <span><span class="plan-dot"></span>Projected</span>
-        <span>Actual / Projected / Target</span>
+        <span><span class="actual-dot"></span>Eaten</span>
+        <span><span class="plan-dot"></span>Planned</span>
       </div>
       ${macroBudgetRow('Calories', macros.cal, projected.cal, tgt.calories, 'cal', '')}
       ${macroBudgetRow('Protein', macros.protein, projected.protein, tgt.protein, 'pro', 'g')}
@@ -987,9 +985,9 @@ function renderToday() {
 
   <!-- ACTIONS -->
   <div class="actions-bar">
-    <button class="btn btn-g" onclick="loadRecompDay('${date}')">LOAD RECOMP DAY</button>
-    <button class="btn btn-g" onclick="addMeal('${date}')">+ ADD MEAL</button>
-    <button class="btn" onclick="repeatYesterday('${date}')">↺ REPEAT YESTERDAY</button>
+    <button class="btn" onclick="loadRecompDay('${date}')">Load recomp day</button>
+    <button class="btn btn-g" onclick="addMeal('${date}')">Add meal</button>
+    <button class="btn" onclick="repeatYesterday('${date}')">Repeat yesterday</button>
   </div>
 
   <!-- MEAL CARDS -->
@@ -1008,16 +1006,20 @@ function renderMealCard(meal, date) {
   const eaten = mealState === 'all';
   const partial = mealState === 'partial';
   const foodRows = meal.foods.length === 0
-    ? `<div class="empty-meal">— empty meal —</div>`
+    ? `<div class="empty-meal">No foods yet</div>`
     : meal.foods.map(e => `
       <div class="fr ${e.eaten === false ? 'skipped' : ''}" data-eid="${e.id}">
         <button class="food-check ${e.eaten === false ? '' : 'on'}" title="${e.eaten === false ? 'Mark eaten' : 'Mark not eaten'}" onclick="toggleFoodEaten('${date}','${meal.id}','${e.id}')">${e.eaten === false ? '' : '✓'}</button>
         <div class="fname">${esc(e.name)}</div>
-        <input class="fsrv" type="number" min="0.1" step="0.1" value="${e.servings}"
-          title="Servings. 1 serving = ${esc(fmtAmount(e.servingSize, e.unit))}"
-          onchange="updateServing('${date}','${meal.id}','${e.id}',this.value)"
-          onblur="renderToday()">
-        <div class="funit" title="1 serving = ${esc(fmtAmount(e.servingSize, e.unit))}">${esc(fmtConsumedAmount(e))}</div>
+        <div class="fqty">
+          <input class="fsrv amt" type="number" min="0.1" step="any"
+            value="${fmtInputAmount(e)}"
+            title="${esc(fmtInputHint(e))}"
+            onchange="updateServing('${date}','${meal.id}','${e.id}',this.value)"
+            onblur="renderToday()">
+          <span class="fqty-u" title="${esc(e.unit)}">${esc(unitLabel(e.unit))}</span>
+        </div>
+        <div class="funit" title="1 serving = ${esc(fmtAmount(e.servingSize, e.unit))}">${esc(fmtAmountSideLabel(e))}</div>
         <div class="fmac">
           <span class="fc">${Math.round(e.calories*e.servings)} cal</span>
           <span class="fp">${Math.round(e.protein*e.servings)}g P</span>
@@ -1101,6 +1103,7 @@ function renderFoods() {
   <div class="sbar" style="margin-bottom:12px">
     <input id="food-search-inp" class="sinp" placeholder="search foods by name or category…"
       value="${esc(q)}" oninput="renderFoods()" autocomplete="off">
+    <button class="btn btn-o" onclick="openBarcodeScanner()">📷 SCAN</button>
     <button class="btn btn-g" onclick="openAddFood()">+ ADD FOOD</button>
   </div>
   <div class="panel" style="overflow-x:auto">
@@ -1430,7 +1433,13 @@ function updateServing(date, mealId, entryId, val) {
   const meal = log.meals.find(m => m.id === mealId);
   if(!meal) return;
   const entry = meal.foods.find(e => e.id === entryId);
-  if(entry) { entry.servings = v; save(); }
+  if(!entry) return;
+  if(hasAmountUnit(entry.unit) && entry.servingSize > 0) {
+    entry.servings = v / entry.servingSize;
+  } else {
+    entry.servings = v;
+  }
+  save();
 }
 
 function removeFoodFromMeal(date, mealId, entryId) {
@@ -1446,8 +1455,186 @@ function removeFoodFromMeal(date, mealId, entryId) {
 }
 
 /* ══════════════════════════════════════════
-   ACTIONS: FOOD DATABASE
+   ACTIONS: FOOD DATABASE — barcode scan + CRUD
 ══════════════════════════════════════════ */
+let _barcodeScanner = null;
+let _barcodeScanBusy = false;
+
+function setScanStatus(msg, kind) {
+  const el = document.getElementById('scan-status');
+  if(!el) return;
+  el.textContent = msg;
+  el.className = 'scan-hint' + (kind ? ' ' + kind : '');
+}
+
+function parseServingSize(raw) {
+  if(!raw) return {servingSize:100, unit:'g', grams:100};
+  const s = String(raw).trim();
+  const gramMatch = s.match(/(\d+\.?\d*)\s*g\b/i);
+  if(gramMatch) {
+    const g = parseFloat(gramMatch[1]);
+    return {servingSize:g, unit:'g', grams:g};
+  }
+  const mlMatch = s.match(/(\d+\.?\d*)\s*ml\b/i);
+  if(mlMatch) {
+    const ml = parseFloat(mlMatch[1]);
+    return {servingSize:ml, unit:'ml', grams:ml};
+  }
+  const numMatch = s.match(/^(\d+\.?\d*)/);
+  if(numMatch) {
+    const n = parseFloat(numMatch[1]);
+    const unit = s.replace(/^\d+\.?\d*\s*/, '').replace(/\(.*\)/, '').trim() || 'serving';
+    return {servingSize:n, unit, grams:null};
+  }
+  return {servingSize:1, unit:'serving', grams:null};
+}
+
+function guessFoodCategory(protein, carbs, fat) {
+  const macroTotal = protein + carbs + fat;
+  if(macroTotal <= 0) return 'other';
+  if(protein / macroTotal >= 0.4 && protein >= 8) return 'protein';
+  if(fat / macroTotal >= 0.45) return 'fat';
+  if(carbs / macroTotal >= 0.45) return 'carb';
+  return 'other';
+}
+
+function extractNutrients(n, servingGrams) {
+  const round1 = v => Math.round(v * 10) / 10;
+  if(n['energy-kcal_serving'] != null || n.proteins_serving != null) {
+    return {
+      calories: Math.round(n['energy-kcal_serving'] || 0),
+      protein:  round1(n.proteins_serving || 0),
+      carbs:    round1(n.carbohydrates_serving || 0),
+      fat:      round1(n.fat_serving || 0),
+    };
+  }
+  const grams = servingGrams || 100;
+  const factor = grams / 100;
+  return {
+    calories: Math.round((n['energy-kcal_100g'] || 0) * factor),
+    protein:  round1((n.proteins_100g || 0) * factor),
+    carbs:    round1((n.carbohydrates_100g || 0) * factor),
+    fat:      round1((n.fat_100g || 0) * factor),
+  };
+}
+
+function mapOpenFoodFactsProduct(product) {
+  const serving = parseServingSize(product.serving_size);
+  const grams = serving.grams || (product.serving_quantity ? parseFloat(product.serving_quantity) : null);
+  const macros = extractNutrients(product.nutriments || {}, grams);
+  if(!macros.calories && !macros.protein && !macros.carbs && !macros.fat) {
+    throw new Error('No nutrition data on this product — enter manually.');
+  }
+  return {
+    name: (product.product_name || product.generic_name || 'Unknown product').trim(),
+    category: guessFoodCategory(macros.protein, macros.carbs, macros.fat),
+    servingSize: serving.servingSize,
+    unit: serving.unit,
+    ...macros,
+  };
+}
+
+async function lookupOpenFoodFacts(barcode) {
+  const code = String(barcode).replace(/\D/g, '');
+  if(code.length < 8) throw new Error('Invalid barcode.');
+  const url = `https://world.openfoodfacts.org/api/v2/product/${code}.json?fields=product_name,generic_name,serving_size,serving_quantity,nutriments`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('Lookup failed — check your connection.');
+  const data = await res.json();
+  if(data.status !== 1 || !data.product) throw new Error('Product not found in Open Food Facts.');
+  return mapOpenFoodFactsProduct(data.product);
+}
+
+async function stopBarcodeScanner() {
+  if(!_barcodeScanner) return;
+  const scanner = _barcodeScanner;
+  _barcodeScanner = null;
+  try {
+    if(scanner.isScanning && scanner.isScanning()) await scanner.stop();
+    scanner.clear();
+  } catch { /* camera may already be released */ }
+}
+
+async function startBarcodeScanner() {
+  if(typeof Html5Qrcode === 'undefined') {
+    setScanStatus('Scanner library failed to load.', 'err');
+    return;
+  }
+  await stopBarcodeScanner();
+  _barcodeScanner = new Html5Qrcode('barcode-reader');
+  const config = {
+    fps: 10,
+    qrbox: (w, h) => ({width: Math.min(w * 0.92, 320), height: Math.min(h * 0.45, 140)}),
+    aspectRatio: 1.333,
+  };
+  try {
+    await _barcodeScanner.start(
+      {facingMode: 'environment'},
+      config,
+      decoded => handleBarcodeDetected(decoded),
+      () => {}
+    );
+  } catch {
+    setScanStatus('Camera access denied or unavailable. Enter barcode manually below.', 'err');
+  }
+}
+
+async function handleBarcodeDetected(code) {
+  if(_barcodeScanBusy) return;
+  _barcodeScanBusy = true;
+  const barcode = String(code).replace(/\D/g, '');
+  if(barcode.length < 8) { _barcodeScanBusy = false; return; }
+  setScanStatus('Looking up ' + barcode + '…', 'loading');
+  await stopBarcodeScanner();
+  try {
+    const food = await lookupOpenFoodFacts(barcode);
+    fillFoodFormFromScan(food);
+    closeModal('ov-barcode-scanner');
+    toast('Product found — review & save ✓');
+  } catch (err) {
+    setScanStatus(err.message || 'Product not found.', 'err');
+    _barcodeScanBusy = false;
+    startBarcodeScanner();
+  }
+}
+
+function lookupManualBarcode() {
+  const code = document.getElementById('barcode-manual').value.replace(/\D/g, '');
+  if(code.length < 8) { toast('Enter a valid barcode (8+ digits)', 'var(--red)'); return; }
+  handleBarcodeDetected(code);
+}
+
+function fillFoodFormFromScan(food) {
+  _editFoodId = null;
+  _barcodeScanBusy = false;
+  document.getElementById('ffm-title').textContent = 'ADD FOOD (SCANNED)';
+  document.getElementById('ff-name').value = food.name;
+  document.getElementById('ff-cat').value  = food.category;
+  document.getElementById('ff-srv').value  = food.servingSize;
+  document.getElementById('ff-unit').value = food.unit;
+  document.getElementById('ff-cal').value  = food.calories;
+  document.getElementById('ff-pro').value  = food.protein;
+  document.getElementById('ff-car').value  = food.carbs;
+  document.getElementById('ff-fat').value  = food.fat;
+  openModal('ov-food-form');
+  setTimeout(() => document.getElementById('ff-name').focus(), 100);
+}
+
+function openBarcodeScanner() {
+  closeModal('ov-food-form');
+  _barcodeScanBusy = false;
+  document.getElementById('barcode-manual').value = '';
+  setScanStatus('Point camera at the UPC barcode on the package.', '');
+  openModal('ov-barcode-scanner');
+  setTimeout(startBarcodeScanner, 300);
+}
+
+function closeBarcodeScanner() {
+  _barcodeScanBusy = false;
+  stopBarcodeScanner();
+  closeModal('ov-barcode-scanner');
+}
+
 function openAddFood() {
   _editFoodId = null;
   document.getElementById('ffm-title').textContent = 'ADD FOOD';
