@@ -257,6 +257,9 @@ button{font-family:var(--font);cursor:pointer}
 #barcode-reader__dashboard_section{display:none}
 .scan-hint{font-size:12px;color:var(--tx2);text-align:center;margin-top:8px;line-height:1.4}
 .scan-hint.loading{color:var(--org)}
+.sync-status{font-size:12px;color:var(--tx2);margin-top:8px;line-height:1.5}
+.sync-status.ok{color:var(--grn)}
+.sync-status.err{color:var(--red)}
 .scan-hint.err{color:var(--red)}
 .scan-hint.ok{color:var(--grn)}
 </style>
@@ -434,6 +437,8 @@ button{font-family:var(--font);cursor:pointer}
   </div>
 </div>
 
+<script src="config.public.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 /* ══════════════════════════════════════════
    CONSTANTS
@@ -548,31 +553,232 @@ let _loadTplMealId = null;
 /* ══════════════════════════════════════════
    PERSISTENCE
 ══════════════════════════════════════════ */
-function save() {
-  localStorage.setItem('fuelos_v2', JSON.stringify(S));
+let sb = null;
+let cloudUser = null;
+let _saveTimer = null;
+let _syncStatus = 'local'; // local | syncing | synced | error
+
+function hasCloud() {
+  const c = window.FUEL_OS_CONFIG;
+  return !!(c?.supabaseUrl && c?.supabaseAnonKey && window.supabase);
 }
 
-function load() {
-  const raw = localStorage.getItem('fuelos_v2');
-  if (raw) {
-    try {
-      const p = JSON.parse(raw);
-      S = {...S, ...p};
-      const storedFoodsVersion = S.foodsVersion || 1;
-      S.foods = mergeDefaultFoods(S.foods);
-      S.foodsVersion = FOODS_VERSION;
-      if (storedFoodsVersion < FOODS_VERSION) {
-        save();
-      }
-    } catch(e) {}
-  } else {
-    S.foods = mergeDefaultFoods([]);
-    S.foodsVersion = FOODS_VERSION;
+function serializeState() {
+  return {
+    foods: S.foods,
+    logs: S.logs,
+    templates: S.templates,
+    targets: S.targets,
+    viewDate: S.viewDate,
+    foodsVersion: S.foodsVersion,
+  };
+}
+
+function cloudStateHasData(data) {
+  if (!data || typeof data !== 'object') return false;
+  if (data.logs && Object.keys(data.logs).length > 0) return true;
+  if (Array.isArray(data.foods) && data.foods.length > 0) return true;
+  if (Array.isArray(data.templates) && data.templates.length > 0) return true;
+  return false;
+}
+
+function applyParsedState(p) {
+  S = {...S, ...p};
+  const storedFoodsVersion = S.foodsVersion || 1;
+  S.foods = mergeDefaultFoods(S.foods);
+  S.foodsVersion = FOODS_VERSION;
+  if (storedFoodsVersion < FOODS_VERSION) {
+    saveLocalOnly();
   }
   normalizeFoodCheckState();
   ensureRecompTemplates();
   ensureTodayPlanVisible();
-  save();
+}
+
+function saveLocalOnly() {
+  localStorage.setItem('fuelos_v2', JSON.stringify(S));
+}
+
+function save() {
+  saveLocalOnly();
+  scheduleCloudSave();
+}
+
+function loadLocal() {
+  const raw = localStorage.getItem('fuelos_v2');
+  if (raw) {
+    try {
+      applyParsedState(JSON.parse(raw));
+    } catch(e) {
+      S.foods = mergeDefaultFoods([]);
+      S.foodsVersion = FOODS_VERSION;
+      normalizeFoodCheckState();
+      ensureRecompTemplates();
+      ensureTodayPlanVisible();
+    }
+  } else {
+    S.foods = mergeDefaultFoods([]);
+    S.foodsVersion = FOODS_VERSION;
+    normalizeFoodCheckState();
+    ensureRecompTemplates();
+    ensureTodayPlanVisible();
+  }
+  saveLocalOnly();
+}
+
+function scheduleCloudSave() {
+  if (!cloudUser || !sb) return;
+  clearTimeout(_saveTimer);
+  _syncStatus = 'syncing';
+  _saveTimer = setTimeout(pushToCloud, 700);
+}
+
+async function pushToCloud() {
+  if (!cloudUser || !sb) return;
+  const { error } = await sb.from('user_states').upsert({
+    user_id: cloudUser.id,
+    data: serializeState(),
+    updated_at: new Date().toISOString(),
+  }, { onConflict: 'user_id' });
+  if (error) {
+    _syncStatus = 'error';
+    console.error(error);
+    toast('Cloud sync failed', 'var(--red)');
+  } else {
+    _syncStatus = 'synced';
+  }
+  if (document.getElementById('s-settings').classList.contains('on')) renderSettings();
+}
+
+async function pullFromCloud() {
+  if (!cloudUser || !sb) return false;
+  const { data, error } = await sb
+    .from('user_states')
+    .select('data')
+    .eq('user_id', cloudUser.id)
+    .maybeSingle();
+  if (error) {
+    console.error(error);
+    toast('Could not load cloud data', 'var(--red)');
+    return false;
+  }
+  if (cloudStateHasData(data?.data)) {
+    applyParsedState(data.data);
+    saveLocalOnly();
+    return true;
+  }
+  return false;
+}
+
+async function initCloud() {
+  if (!hasCloud()) return;
+  const cfg = window.FUEL_OS_CONFIG;
+  sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    cloudUser = session.user;
+    const hadCloud = await pullFromCloud();
+    _syncStatus = 'synced';
+    maybeOfferLocalUpload(hadCloud);
+  }
+
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (session?.user) {
+      const wasOut = !cloudUser;
+      cloudUser = session.user;
+      if (wasOut) {
+        const hadCloud = await pullFromCloud();
+        _syncStatus = 'synced';
+        maybeOfferLocalUpload(hadCloud);
+        renderAll();
+      }
+    } else {
+      cloudUser = null;
+      _syncStatus = 'local';
+    }
+    renderSettings();
+  });
+}
+
+function maybeOfferLocalUpload(hadCloud) {
+  if (hadCloud || !localStorage.getItem('fuelos_v2')) return;
+  confirm2(
+    'Your account has no saved data yet. Upload what is in this browser?',
+    'Upload',
+    async () => {
+      await pushToCloud();
+      toast('Uploaded to cloud ✓');
+    }
+  );
+}
+
+async function sendMagicLink() {
+  if (!sb) { toast('Cloud not configured', 'var(--red)'); return; }
+  const email = document.getElementById('auth-email')?.value.trim();
+  if (!email) { toast('Enter your email', 'var(--red)'); return; }
+  const redirectTo = window.location.origin + window.location.pathname;
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: redirectTo },
+  });
+  if (error) {
+    toast(error.message, 'var(--red)');
+    return;
+  }
+  toast('Check your email for the sign-in link ✓');
+}
+
+async function signOutCloud() {
+  if (!sb) return;
+  await sb.auth.signOut();
+  cloudUser = null;
+  _syncStatus = 'local';
+  toast('Signed out');
+  renderSettings();
+}
+
+function syncStatusHtml() {
+  if (!hasCloud()) return '<p class="sync-status">Cloud sync is not configured.</p>';
+  if (!cloudUser) return '<p class="sync-status">Sign in to sync across devices.</p>';
+  const labels = {
+    local: 'Signed in',
+    syncing: 'Saving…',
+    synced: 'All changes saved to cloud',
+    error: 'Last save failed — still saved on this device',
+  };
+  const cls = _syncStatus === 'synced' ? 'sync-status ok' : _syncStatus === 'error' ? 'sync-status err' : 'sync-status';
+  return `<p class="${cls}">${labels[_syncStatus] || labels.local}</p>`;
+}
+
+function renderCloudSettings() {
+  if (!hasCloud()) {
+    return `<div class="sset">
+      <div class="stitle">Cloud sync</div>
+      <p class="sync-status">Missing Supabase config.</p>
+    </div>`;
+  }
+  if (cloudUser) {
+    return `<div class="sset">
+      <div class="stitle">Account</div>
+      <p style="font-size:12px;color:var(--tx2);margin-bottom:10px">Signed in as <strong style="color:var(--tx3)">${esc(cloudUser.email)}</strong></p>
+      ${syncStatusHtml()}
+      <div class="actions-bar" style="margin-top:12px;margin-bottom:0">
+        <button class="btn" onclick="pushToCloud(); toast('Synced ✓')">Sync now</button>
+        <button class="btn" onclick="signOutCloud()">Sign out</button>
+      </div>
+    </div>`;
+  }
+  return `<div class="sset">
+    <div class="stitle">Account</div>
+    <p style="font-size:12px;color:var(--tx2);margin-bottom:10px">Sign in with a magic link to save foods and logs to the cloud.</p>
+    <div class="fg" style="margin-bottom:10px">
+      <label>Email</label>
+      <input id="auth-email" class="fi" type="email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <button class="btn btn-g" onclick="sendMagicLink()">Email sign-in link</button>
+    ${syncStatusHtml()}
+  </div>`;
 }
 
 /* ══════════════════════════════════════════
@@ -1183,6 +1389,8 @@ function renderSettings() {
         <button class="btn btn-g" onclick="toast('Targets saved')">Save targets</button>
       </div>
 
+      ${renderCloudSettings()}
+
       <div class="sset">
         <div class="stitle">Data</div>
         <div class="actions-bar">
@@ -1196,7 +1404,7 @@ function renderSettings() {
       <div class="sset">
         <div class="stitle">About</div>
         <div style="font-size:12px;color:var(--tx2);line-height:1.7">
-          Fuel OS — local meal planner. Data stays in your browser.
+          Fuel OS — meal planner. Saves on this device; syncs to your account when signed in.
         </div>
       </div>
     </div>
@@ -1803,8 +2011,15 @@ function updateTarget(key, val) {
 }
 
 function confirmResetAll() {
-  confirm2('This will delete ALL logs, templates, and foods. Are you sure?', 'Reset', () => {
+  confirm2('This will delete ALL logs, templates, and foods. Are you sure?', 'Reset', async () => {
     localStorage.removeItem('fuelos_v2');
+    if (cloudUser && sb) {
+      await sb.from('user_states').upsert({
+        user_id: cloudUser.id,
+        data: {},
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id' });
+    }
     location.reload();
   });
 }
@@ -1941,9 +2156,14 @@ document.addEventListener('keydown', e => {
 /* ══════════════════════════════════════════
    INIT
 ══════════════════════════════════════════ */
-load();
-renderHeader();
-renderToday();
+async function boot() {
+  loadLocal();
+  renderHeader();
+  renderToday();
+  await initCloud();
+  if (cloudUser) renderAll();
+}
+boot();
 </script>
 </body>
 </html>
